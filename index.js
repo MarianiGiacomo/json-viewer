@@ -5,18 +5,48 @@ function readKeys(input) {
   } catch (err) {
     throw err;
   }
-  return jsonToHTML(input)
+  return (show) => jsonToHTML(input, show);
 }
 
-function jsonToHTML(input) {
-  const html = ['<ul>'];
+function jsonToHTML(input, show) {
+  const display = show ? 'block' : 'none';
+  const htmlArray = [`<ul style="display:${display}">`];
   for( let [key, value] of Object.entries(input)) {
-    if(typeof(value) === 'object') {
-      html.push(jsonToHTML(value));
+    if(typeof(value) === 'object' && Object.keys(value).length > 0) {
+      htmlArray.push(`<li>${key}:<span class="clickable" style="cursor: pointer">+</span>`)
+      htmlArray.push(jsonToHTML(value, false));
     } else {
-      html.push(`<li>${key}: ${value}</li>`)
+      let content;
+      if(Array.isArray(value)) {
+        content = '[]'
+      } else if(typeof(value) === 'object') {
+        content = '{}'
+      } else {
+        content = `<span class="clickable" style="cursor: pointer">+</span><pre style="display:${display}"><code>${value}</code></pre>`;
+      }
+      htmlArray.push(`<li>${key}: ${content}</li>`)
     }
   }
-  html.push('</ul>')
-  return html.flat().join('');
+  htmlArray.push('</ul>')
+  return htmlArray.flat().join('');
+}
+
+function setClickListeners() {
+  const clickableElements = document.getElementsByClassName('clickable');
+  Array.from(clickableElements).forEach( el => {
+    el.onclick = () => {
+      const node = el.nextSibling;
+      if(node.style && node.style.display == 'none') {
+        node.style.display = 'block';
+        el.innerText = ' -'
+      } else if(node.style && node.style.display == 'block') {
+        node.style.display = 'none';
+        el.innerText = '+'
+      }
+    };
+  })
+}
+
+const clickableStyle = {
+  cursor: 'pointer'
 }

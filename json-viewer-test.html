@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>JSON Viewer Test</title>
+    <script src="./index.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" id="json-file" value="">
+      <input type="submit"  value="Submit">
+    </form>
+  </body>
+  <script type="text/javascript">
+    const form = document.getElementById('form');
+    form.addEventListener('submit', getJSONfile);
+
+    function getJSONfile(event) {
+      event.preventDefault();
+      const jsonAddress = document.getElementById('json-file').value;
+      console.log(jsonAddress);
+      fetch(jsonAddress)
+        .then(response => response.json())
+        .then(data => {
+          appendJSON(readKeys(data)(true));
+          setClickListeners();
+        });
+    }
+
+    function appendJSON(jsonHTML) {
+      const jsonDiv = document.createElement('div');
+      jsonDiv.innerHTML = jsonHTML;
+      document.body.appendChild(jsonDiv);
+    }
+  </script>
+</html>
