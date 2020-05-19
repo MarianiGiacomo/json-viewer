@@ -22,7 +22,7 @@ function jsonToHTML(input, show) {
       } else if(typeof(value) === 'object') {
         content = '{}'
       } else {
-        content = `<span class="clickable" style="cursor: pointer">+</span><pre style="display:${display}"><code>${value}</code></pre>`;
+        content = `<span class="clickable" style="cursor: pointer">+</span><code style="display:none"><pre>${value}</pre></code>`;
       }
       htmlArray.push(`<li>${key}: ${content}</li>`)
     }
@@ -47,6 +47,9 @@ function setClickListeners() {
   })
 }
 
-const clickableStyle = {
-  cursor: 'pointer'
+if(typeof(module) !== undefined) {
+  module.exports = {
+    readKeys,
+    setClickListeners
+  }
 }
