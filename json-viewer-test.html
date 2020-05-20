@@ -8,6 +8,8 @@
   <body>
     <form id="form">
       <input type="text" id="json-file" value="">
+      <label for="html-to-string">Show HTML content as string</label>
+      <input type="checkbox" id="html-to-string" value="">
       <input type="submit"  value="Submit">
     </form>
   </body>
@@ -18,11 +20,11 @@
     function getJSONfile(event) {
       event.preventDefault();
       const jsonAddress = document.getElementById('json-file').value;
-      console.log(jsonAddress);
+      const htmlToString = document.getElementById('html-to-string').checked;
       fetch(jsonAddress)
         .then(response => response.json())
         .then(data => {
-          appendJSON(readKeys(data)(true));
+          appendJSON(jsonToHTML(data)(true)(htmlToString));
           setClickListeners();
         });
     }

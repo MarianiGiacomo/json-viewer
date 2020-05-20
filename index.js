@@ -1,34 +1,48 @@
+function jsonToHTML(input) {
+  return (show) => {
+    return (htmlToString) => {
+      const json = parseInput(input);
+      const display = show ? 'block' : 'none';
+      const repSm = /</gi;
+      const repGt = />/gi;
+      const htmlArray = [`<ul style="display:${display}">`];
+      for( let [key, value] of Object.entries(json)) {
+        if(typeof(value) === 'object' && Object.keys(value).length > 0) {
+          htmlArray.push(`<li>${key}:<span class="clickable" style="cursor: pointer">+</span>`)
+          htmlArray.push(jsonToHTML(value)(false)(htmlToString));
+        } else {
+          let content;
+          if(Array.isArray(value)) {
+            content = '[]'
+          } else if(typeof(value) === 'object') {
+            content = '{}'
+          } else {
+            const formattedContent = (typeof(value) === 'string' && htmlToString) ? value.replace(repSm, '&lt;').replace(repGt, '&gt;') : value;
+            content = getFinalContent(formattedContent);
+          }
+          htmlArray.push(`<li>${key}: ${content}</li>`)
+        }
+      }
+      htmlArray.push('</ul>')
+      return htmlArray.flat().join('');
+    }
+  }
+}
 
-function readKeys(input) {
+function getFinalContent(formattedContent) {
+  if(formattedContent.length < 50 || typeof(formattedContent) == 'number') {
+    return `<span>${formattedContent}</span>`;
+  }
+  return `<span class="clickable" style="cursor: pointer">+</span><pre style="display:none">${formattedContent}</pre>`;
+}
+
+function parseInput(input) {
   try {
-    const json = typeof(input) === 'string' ? JSON.parse(input) : input
+    var json = typeof(input) === 'string' ? JSON.parse(input) : input
   } catch (err) {
     throw err;
   }
-  return (show) => jsonToHTML(input, show);
-}
-
-function jsonToHTML(input, show) {
-  const display = show ? 'block' : 'none';
-  const htmlArray = [`<ul style="display:${display}">`];
-  for( let [key, value] of Object.entries(input)) {
-    if(typeof(value) === 'object' && Object.keys(value).length > 0) {
-      htmlArray.push(`<li>${key}:<span class="clickable" style="cursor: pointer">+</span>`)
-      htmlArray.push(jsonToHTML(value, false));
-    } else {
-      let content;
-      if(Array.isArray(value)) {
-        content = '[]'
-      } else if(typeof(value) === 'object') {
-        content = '{}'
-      } else {
-        content = `<span class="clickable" style="cursor: pointer">+</span><code style="display:none"><pre>${value}</pre></code>`;
-      }
-      htmlArray.push(`<li>${key}: ${content}</li>`)
-    }
-  }
-  htmlArray.push('</ul>')
-  return htmlArray.flat().join('');
+  return json;
 }
 
 function setClickListeners() {
@@ -49,7 +63,7 @@ function setClickListeners() {
 
 if(typeof(module) !== undefined) {
   module.exports = {
-    readKeys,
+    jsonToHTML,
     setClickListeners
   }
 }
