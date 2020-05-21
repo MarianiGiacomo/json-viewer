@@ -40,6 +40,7 @@ function parseInput(input) {
   try {
     var json = typeof(input) === 'string' ? JSON.parse(input) : input
   } catch (err) {
+    console.log(input);
     throw err;
   }
   return json;
