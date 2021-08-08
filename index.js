@@ -1,4 +1,4 @@
-function jsonToHTML(input) {
+export function jsonToHTML(input) {
   return (show) => {
     return (htmlToString) => {
       const json = parseInput(input);
@@ -46,25 +46,18 @@ function parseInput(input) {
   return json;
 }
 
-function setClickListeners() {
+export function setClickListeners() {
   const clickableElements = document.getElementsByClassName('clickable');
   Array.from(clickableElements).forEach( el => {
     el.onclick = () => {
       const node = el.nextSibling;
-      if(node.style && node.style.display == 'none') {
+      if(node.style && node.style.display === 'none') {
         node.style.display = 'block';
         el.innerText = ' -'
-      } else if(node.style && node.style.display == 'block') {
+      } else if(node.style && node.style.display === 'block') {
         node.style.display = 'none';
         el.innerText = '+'
       }
     };
   })
-}
-
-if(typeof(module) !== undefined) {
-  module.exports = {
-    jsonToHTML,
-    setClickListeners
-  }
 }
