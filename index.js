@@ -17,8 +17,8 @@ function jsonToHTML(input) {
           } else if(typeof(value) === 'object') {
             content = '{}'
           } else {
-            const formattedContent = (typeof(value) === 'string' && htmlToString) ? value.replace(repSm, '&lt;').replace(repGt, '&gt;') : value;
-            content = getFinalContent(formattedContent);
+            const formattedContent = (typeof(value) === 'string' && htmlToString) ? value.replace(repSm, '&lt;').replace(repGt, '&gt;') : value?? 'undefined';
+						content = getFinalContent(formattedContent);
           }
           htmlArray.push(`<li>${key}: ${content}</li>`)
         }
